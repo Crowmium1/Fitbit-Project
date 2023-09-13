@@ -55,6 +55,9 @@ total_active_minutes = df['TotalActiveMinutes'].sum()
 
 # Feature Engineering: Split ActivityDate into year, month, day, day of week, weekend columns
 df['Day'] = df['ActivityDate'].dt.day
+
+# Convert df['Day'] to number of days since the first day in the dataset
+df['Day'] = df['ActivityDate'].dt.day
 df['DayOfWeek'] = df['ActivityDate'].dt.dayofweek
 df['Weekend'] = np.where(df['DayOfWeek'] > 4, 1, 0) # Create weekend column (0 = Mon-Fri, 1 = Sat-Sun)
 
@@ -90,8 +93,8 @@ correlation_active_minutes_calories = df['VeryActiveMinutes'].corr(df['Calories'
 print('Correlation between total steps and calories burnt: ', correlation_steps_calories)
 print('Correlation between very active minutes and calories burnt: ', correlation_active_minutes_calories)
 
-# Descriptive Statistics of sedentary minutes
-print(df['SedentaryMinutes'].describe())
+# # Descriptive Statistics of sedentary minutes
+# print(df['SedentaryMinutes'].describe())
 
 # Divide the data into segments based on sedentary behavior.
 # Discern sedentary categories
@@ -135,7 +138,7 @@ def classify_by_steps(average_steps):
 daily_avg_ID['Activity_Category'] = daily_avg_ID['mean_daily_steps'].apply(classify_by_steps)
 # Apply the function to the 'mean_daily_steps' column to create a new 'Sedentary_Category' column
 daily_avg_ID['Sedentary_Category'] = daily_avg_ID['mean_daily_sleep'].apply(sedentary_segment)
-print(daily_avg_ID)
+# print(daily_avg_ID)
 
 # Group by 'Activity_Category' and count each group
 user_type_percent = daily_avg_ID.groupby('Activity_Category').size().reset_index(name='total')
@@ -149,8 +152,8 @@ user_type_percent['percentage%'] = user_type_percent['Total_Percent'].apply(lamb
 ordered_categories = ["Very active", "Fairly active", "Lightly active", "Sedentary"]
 user_type_percent['Activity_Category'] = pd.Categorical(user_type_percent['Activity_Category'], categories=ordered_categories, ordered=True)
 user_type_percent = user_type_percent.sort_values('Activity_Category')
-# Print DataFrame
-print(user_type_percent)
+# # Print DataFrame
+# print(user_type_percent)
 
 # Print the pie chart
 labels = user_type_percent['Activity_Category']
@@ -197,7 +200,7 @@ for name, group in grouped:
 # Convert the DatetimeIndex to day names
 Day = df['DayOfWeek']
 agg_df = pd.concat([agg_df, Day], axis = 1)
-print(agg_df)
+# print(agg_df)
 
 # Apply the function to the 'mean_daily_steps' column to create a new 'Activity_Category' column
 agg_df['Activity_Category'] = agg_df['TotalSteps'].apply(classify_by_steps)
@@ -242,7 +245,7 @@ daily_avg_ID['efficiency_per_minute'] = daily_avg_ID['mean_daily_calories'] / da
 agg_df['efficiency_per_step'] = agg_df['Calories'] / agg_df['TotalSteps']
 agg_df['efficiency_per_minute'] = agg_df['Calories'] / agg_df['TotalActiveMinutes']
 
-print(daily_avg_ID)
+# print(daily_avg_ID)
 print(agg_df)
 
 # Plot Efficiency per Step by Day of Week. See if users there are days when users are more efficient in their activities.
@@ -261,7 +264,6 @@ config = {
 }
 
 analyzer.trend_and_subplot_by_id(**config["bar_plot"])
-
 
 # # Plot Efficiency per Active Minute
 config = {
